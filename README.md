@@ -32,7 +32,7 @@ Ce backend s’inscrit dans le développement d’une **alternative à WatchToge
 - **GitHub** — Versionnement et branches
 - **Trello** — Suivi des tâches et planification
 - **Postman** — Tests des endpoints
-- **Discord / Teams** — Communication et réunions
+- **WhatsApp** — Communication et réunions
 
 ---
 
@@ -65,12 +65,12 @@ Chaque phase est accompagnée d’**artefacts de travail** : diagrammes, rapport
 ### 🧰 Prérequis
 - **Java 23** installé
 - **Maven 3+**
-- **MySQL / PostgreSQL** configuré
+- **PostgreSQL** configuré
 
 ### ⚙️ Étapes d’installation
 ```bash
 # Cloner le projet
-git clone https://github.com/<votre_repo>/api-watchfilx.git
+git clone https://github.com/AvignonUnivCollab/api-watchflix.git
 cd api-watchfilx
 
 # Compiler et exécuter le projet
