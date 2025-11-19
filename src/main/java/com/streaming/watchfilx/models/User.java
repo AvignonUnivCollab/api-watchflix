@@ -3,7 +3,7 @@ package com.streaming.watchfilx.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "users")   // <-- évite les conflits avec SQL keyword "user"
+@Table(name = "users")
 public class User {
 
     @Id
@@ -14,16 +14,14 @@ public class User {
     private String prenom;
 
     @Column(unique = true, nullable = false)
-    private String adresseMail;
+    private String email;
 
     @Column(nullable = false)
-    private String motDePasse;
+    private String password;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
-
-    // ----- GETTERS & SETTERS -----
 
     public Long getId() {
         return id;
@@ -49,20 +47,20 @@ public class User {
         this.prenom = prenom;
     }
 
-    public String getAdresseMail() {
-        return adresseMail;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAdresseMail(String adresseMail) {
-        this.adresseMail = adresseMail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getMotDePasse() {
-        return motDePasse;
+    public String getPassword() {
+        return password;
     }
 
-    public void setMotDePasse(String motDePasse) {
-        this.motDePasse = motDePasse;
+    public void setPassword(String motDePasse) {
+        this.password = motDePasse;
     }
 
     public Role getRole() {

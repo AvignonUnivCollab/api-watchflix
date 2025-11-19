@@ -21,17 +21,16 @@ public class UserService {
 
     public User register(User user) {
 
-        if (userRepository.findByAdresseMail(user.getAdresseMail()).isPresent()) {
+        if (userRepository.findByEmail(user.getEmail()).isPresent()) {
             throw new RuntimeException("Email déjà utilisé !");
         }
 
-        user.setMotDePasse(passwordEncoder.encode(user.getMotDePasse()));
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRole(Role.USER);
 
         return userRepository.save(user);
     }
 
-    // GETTERS pour login
     public UserRepository getUserRepository() {
         return userRepository;
     }
@@ -42,22 +41,22 @@ public class UserService {
 
     public User login(String email, String password) {
 
-        // Vérifie si email existe
-        User user = userRepository.findByAdresseMail(email)
+        User user = userRepository
+                .findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email introuvable"));
 
-        // Vérifie si le mot de passe correspond
-        if (!passwordEncoder.matches(password, user.getMotDePasse())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new RuntimeException("Mot de passe incorrect");
         }
 
-        return user; // Connexion réussie
+        return user;
     }
 
 
     public String createResetToken(String email) {
 
-        User user = userRepository.findByAdresseMail(email)
+        User user = userRepository
+                .findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Email introuvable"));
 
         String token = UUID.randomUUID().toString();
@@ -71,14 +70,13 @@ public class UserService {
 
     public String resetPassword(String token, String newPassword) {
 
-        User user = userRepository.findByResetToken(token)
+        User user = userRepository
+                .findByResetToken(token)
                 .orElseThrow(() -> new RuntimeException("Token invalide"));
 
-        user.setMotDePasse(passwordEncoder.encode(newPassword));
+        user.setPassword(passwordEncoder.encode(newPassword));
 
-        // Le token n'est plus valide une fois utilisé
         user.setResetToken(null);
-
         userRepository.save(user);
 
         return "Mot de passe réinitialisé avec succès";
