@@ -9,7 +9,7 @@ import java.util.Optional;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    Optional<User> findByAdresseMail(String email);
+    Optional<User> findByEmail(String email);
 
-    Optional<User> findByResetToken(String token); // <--- AJOUTER JUSTE ÇA
+    Optional<User> findByResetToken(String token);
 }

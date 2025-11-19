@@ -12,7 +12,7 @@ public class LoginResponse {
 
     public LoginResponse(String message, User user) {
         this.message = message;
-        this.email = user.getAdresseMail();
+        this.email = user.getEmail();
         this.nom = user.getNom();
         this.prenom = user.getPrenom();
         this.role = user.getRole().name();

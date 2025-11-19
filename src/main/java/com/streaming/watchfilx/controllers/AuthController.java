@@ -32,7 +32,7 @@ public class AuthController {
     public String forgotPassword(@RequestBody ForgotPasswordRequest request) {
         boolean exists = userService
                 .getUserRepository()
-                .findByAdresseMail(request.getEmail())
+                .findByEmail(request.getEmail())
                 .isPresent();
 
         if (!exists) {
