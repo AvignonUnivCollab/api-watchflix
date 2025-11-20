@@ -17,4 +17,9 @@ public class RoomController {
     public Room createRoom(@RequestBody Room room) {
         return roomService.createRoom(room);
     }
+
+    @PostMapping("/join")
+    public String joinRoom(@RequestParam Long roomId, @RequestParam Long userId) {
+        return roomService.joinRoom(roomId, userId);
+    }
 }
