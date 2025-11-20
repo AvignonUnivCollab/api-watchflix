@@ -1,13 +1,20 @@
 package com.streaming.watchfilx.controllers;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.streaming.watchfilx.models.Room;
+import com.streaming.watchfilx.services.RoomService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class HelloController {
+@RequestMapping("/rooms")
+@CrossOrigin(origins = "*")
+public class RoomController {
 
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "Bienvenue sur WatchFilx 🚀";
+    @Autowired
+    private RoomService roomService;
+
+    @PostMapping("/create")
+    public Room createRoom(@RequestBody Room room) {
+        return roomService.createRoom(room);
     }
 }
