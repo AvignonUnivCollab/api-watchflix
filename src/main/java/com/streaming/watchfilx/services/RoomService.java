@@ -78,4 +78,25 @@ public class RoomService {
 
         return "Utilisateur ajouté au salon avec succès";
     }
+
+    // -----------------------
+    //  PUBLIER UNE VIDÉO DANS UN SALON
+    // -----------------------
+    public Room publishVideo(Long roomId, Long videoId) {
+
+        // Vérifier que le salon existe
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        // Vérifier que l'ID vidéo est valide
+        if (videoId == null || videoId <= 0) {
+            throw new RuntimeException("ID vidéo invalide");
+        }
+
+        // Associer la vidéo au salon
+        room.setCurrentVideoId(videoId);
+
+        // Sauvegarder
+        return roomRepository.save(room);
+    }
 }
