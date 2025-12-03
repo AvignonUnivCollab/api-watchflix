@@ -21,7 +21,6 @@ public class RoomMember {
         this.joinedAt = LocalDateTime.now();
     }
 
-    // GETTERS & SETTERS
     public Long getId() { return id; }
 
     public Long getRoomId() { return roomId; }
