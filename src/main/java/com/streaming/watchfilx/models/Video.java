@@ -15,6 +15,12 @@ public class Video {
     private String thumbnail;
     private Integer duration;
 
+    @Column(name = "room_id", nullable = false)
+    private Long roomId;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     // --------- GETTERS & SETTERS ------------
 
     public Long getId() { return id; }
@@ -31,4 +37,10 @@ public class Video {
 
     public Integer getDuration() { return duration; }
     public void setDuration(Integer duration) { this.duration = duration; }
+
+    public Long getRoomId() { return roomId; }
+    public void setRoomId(Long roomId) { this.roomId = roomId; }
+
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
 }
