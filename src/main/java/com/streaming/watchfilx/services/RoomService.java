@@ -44,7 +44,6 @@ public class RoomService {
             room.setMembers(0);
         }
 
-        // Réinitialiser si id vidéo invalide
         if (room.getCurrentVideoId() != null && room.getCurrentVideoId() <= 0) {
             room.setCurrentVideoId(null);
         }
@@ -60,8 +59,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-        User user = userRepository
-                .findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         boolean alreadyMember = memberRepository.findByRoomIdAndUserId(roomId, userId).isPresent();
@@ -105,6 +103,30 @@ public class RoomService {
     }
 
     // -----------------------
+    //  QUITTER UN SALON
+    // -----------------------
+    public String leaveRoom(Long roomId, Long userId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        RoomMember member = memberRepository.findByRoomIdAndUserId(roomId, userId)
+                .orElseThrow(() -> new RuntimeException("L'utilisateur n'est pas dans ce salon"));
+
+        // Supprimer le membre
+        memberRepository.delete(member);
+
+        // Mettre à jour le nombre de membres
+        room.setMembers(room.getMembers() - 1);
+        roomRepository.save(room);
+
+        return "Utilisateur a quitté le salon avec succès";
+    }
+
+    // -----------------------
     //  SUPPRIMER UN SALON
     // -----------------------
     public String deleteRoom(Long roomId) {
@@ -112,11 +134,9 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-        // Supprimer les membres associés
         List<RoomMember> members = memberRepository.findByRoomId(roomId);
         memberRepository.deleteAll(members);
 
-        // Supprimer le salon
         roomRepository.delete(room);
 
         return "Salon supprimé avec succès";

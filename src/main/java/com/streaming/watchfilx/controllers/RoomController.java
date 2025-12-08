@@ -32,6 +32,14 @@ public class RoomController {
     }
 
     // -----------------------
+    //  QUITTER UN SALON
+    // -----------------------
+    @PostMapping("/leave")
+    public String leaveRoom(@RequestParam Long roomId, @RequestParam Long userId) {
+        return roomService.leaveRoom(roomId, userId);
+    }
+
+    // -----------------------
     //  PUBLIER UNE VIDÉO
     // -----------------------
     @PostMapping("/publish-video")
@@ -40,7 +48,7 @@ public class RoomController {
     }
 
     // -----------------------
-    //  ✔️ LISTE DES SALONS
+    //  LISTE DES SALONS
     // -----------------------
     @GetMapping("/list")
     public List<Room> getAllRooms() {
@@ -48,7 +56,7 @@ public class RoomController {
     }
 
     // -----------------------
-    //   SUPPRIMER UN SALON
+    //  SUPPRIMER UN SALON
     // -----------------------
     @DeleteMapping("/delete")
     public String deleteRoom(@RequestParam Long roomId) {
