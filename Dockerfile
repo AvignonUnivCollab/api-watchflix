@@ -2,8 +2,11 @@
 FROM eclipse-temurin:17-jdk AS build
 WORKDIR /app
 
-# Copy everything into the container
+# Copy all files
 COPY . .
+
+# Give permission to mvnw
+RUN chmod +x mvnw
 
 # Build the Spring Boot JAR
 RUN ./mvnw clean package -DskipTests
@@ -12,7 +15,7 @@ RUN ./mvnw clean package -DskipTests
 FROM eclipse-temurin:17-jdk
 WORKDIR /app
 
-# Copy the built JAR from the build stage
+# Copy the built JAR from stage 1
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
