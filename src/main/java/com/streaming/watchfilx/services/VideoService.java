@@ -47,4 +47,17 @@ public class VideoService {
     public List<Video> getAllVideos() {
         return videoRepository.findAll();
     }
+
+    // -------------------------------------------
+    //  SUPPRIMER UNE VIDÉO PAR ID
+    // -------------------------------------------
+    public void deleteVideo(Long videoId) {
+
+        // Vérifier que la vidéo existe
+        if (!videoRepository.existsById(videoId)) {
+            throw new RuntimeException("Vidéo introuvable");
+        }
+
+        videoRepository.deleteById(videoId);
+    }
 }

@@ -17,18 +17,36 @@ public class VideoController {
         this.videoService = videoService;
     }
 
+    // --------------------------
+    //  CRÉER UNE VIDÉO
+    // --------------------------
     @PostMapping("/create")
     public Video createVideo(@RequestBody Video video) {
         return videoService.createVideo(video);
     }
 
+    // --------------------------
+    //  RÉCUPÉRER UNE VIDÉO PAR ID
+    // --------------------------
     @GetMapping("/{id}")
     public Video getVideo(@PathVariable Long id) {
         return videoService.getVideo(id).orElse(null);
     }
 
+    // --------------------------
+    //  LISTE DES VIDÉOS
+    // --------------------------
     @GetMapping
     public List<Video> getAllVideos() {
         return videoService.getAllVideos();
+    }
+
+    // --------------------------
+    //   SUPPRIMER UNE VIDÉO
+    // --------------------------
+    @DeleteMapping("/delete")
+    public String deleteVideo(@RequestParam Long videoId) {
+        videoService.deleteVideo(videoId);
+        return "Vidéo supprimée avec succès";
     }
 }
