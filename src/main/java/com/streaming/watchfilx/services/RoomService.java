@@ -103,4 +103,22 @@ public class RoomService {
     public List<Room> getAllRooms() {
         return roomRepository.findAll();
     }
+
+    // -----------------------
+    //  SUPPRIMER UN SALON
+    // -----------------------
+    public String deleteRoom(Long roomId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        // Supprimer les membres associés
+        List<RoomMember> members = memberRepository.findByRoomId(roomId);
+        memberRepository.deleteAll(members);
+
+        // Supprimer le salon
+        roomRepository.delete(room);
+
+        return "Salon supprimé avec succès";
+    }
 }

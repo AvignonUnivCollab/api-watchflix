@@ -46,4 +46,12 @@ public class RoomController {
     public List<Room> getAllRooms() {
         return roomService.getAllRooms();
     }
+
+    // -----------------------
+    //   SUPPRIMER UN SALON
+    // -----------------------
+    @DeleteMapping("/delete")
+    public String deleteRoom(@RequestParam Long roomId) {
+        return roomService.deleteRoom(roomId);
+    }
 }
