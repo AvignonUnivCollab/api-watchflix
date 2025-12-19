@@ -10,6 +10,8 @@ import com.streaming.watchfilx.repositories.UserRepository;
 import com.streaming.watchfilx.repositories.VideoRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class RoomService {
 
@@ -29,6 +31,9 @@ public class RoomService {
         this.videoRepository = videoRepository;
     }
 
+    // -----------------------
+    //  CRÉER UN SALON
+    // -----------------------
     public Room createRoom(Room room) {
 
         if (roomRepository.findByName(room.getName()).isPresent()) {
@@ -46,16 +51,17 @@ public class RoomService {
         return roomRepository.save(room);
     }
 
+    // -----------------------
+    //  REJOINDRE UN SALON
+    // -----------------------
     public String joinRoom(Long roomId, Long userId) {
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-        User user = userRepository
-                .findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
-        // Vérifier si utilisateur déjà membre
         boolean alreadyMember = memberRepository.findByRoomIdAndUserId(roomId, userId).isPresent();
         if (alreadyMember) {
             return "Utilisateur déjà dans le salon";
@@ -68,6 +74,7 @@ public class RoomService {
 
         room.setMembers(room.getMembers() + 1);
         roomRepository.save(room);
+
         return "Utilisateur ajouté au salon avec succès";
     }
 
@@ -76,19 +83,62 @@ public class RoomService {
     // -----------------------
     public Room publishVideo(Long roomId, Long videoId) {
 
-        // Vérifier que le salon existe
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-        // Vérifier que la vidéo existe
         Video video = videoRepository.findById(videoId)
                 .orElseThrow(() -> new RuntimeException("Vidéo introuvable"));
 
-        // Associer la vidéo au salon
         room.setCurrentVideoId(videoId);
         room.setDuration(video.getDuration());
 
-        // Sauvegarde
         return roomRepository.save(room);
+    }
+
+    // -----------------------
+    //  LISTE DES SALONS
+    // -----------------------
+    public List<Room> getAllRooms() {
+        return roomRepository.findAll();
+    }
+
+    // -----------------------
+    //  QUITTER UN SALON
+    // -----------------------
+    public String leaveRoom(Long roomId, Long userId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+
+        RoomMember member = memberRepository.findByRoomIdAndUserId(roomId, userId)
+                .orElseThrow(() -> new RuntimeException("L'utilisateur n'est pas dans ce salon"));
+
+        // Supprimer le membre
+        memberRepository.delete(member);
+
+        // Mettre à jour le nombre de membres
+        room.setMembers(room.getMembers() - 1);
+        roomRepository.save(room);
+
+        return "Utilisateur a quitté le salon avec succès";
+    }
+
+    // -----------------------
+    //  SUPPRIMER UN SALON
+    // -----------------------
+    public String deleteRoom(Long roomId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        List<RoomMember> members = memberRepository.findByRoomId(roomId);
+        memberRepository.deleteAll(members);
+
+        roomRepository.delete(room);
+
+        return "Salon supprimé avec succès";
     }
 }
