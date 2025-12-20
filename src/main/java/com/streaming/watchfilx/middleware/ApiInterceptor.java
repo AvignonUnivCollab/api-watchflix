@@ -18,7 +18,7 @@ public class ApiInterceptor implements HandlerInterceptor {
         String apiKey = request.getHeader("X-API-KEY");
 
         if (apiKey == null || !apiKey.equals("123456")) {
-            System.out.println("⛔ API KEY manquante ou invalide");
+            System.out.println("API KEY manquante ou invalide");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             response.getWriter().write("Unauthorized - API KEY invalid");
             return false; // Stop la requête

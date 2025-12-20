@@ -56,6 +56,14 @@ public class RoomController {
     }
 
     // -----------------------
+    //  AFFICHER UN SALON PAR ID  ✅ NOUVELLE API
+    // -----------------------
+    @GetMapping("/{id}")
+    public Room getRoomById(@PathVariable Long id) {
+        return roomService.getRoomById(id);
+    }
+
+    // -----------------------
     //  SUPPRIMER UN SALON
     // -----------------------
     @DeleteMapping("/delete")

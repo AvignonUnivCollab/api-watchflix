@@ -15,6 +15,12 @@ public class InterceptorConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(apiInterceptor)
-                .addPathPatterns("/rooms/**", "/messages/**"); // Les routes à intercepter
+                .addPathPatterns("/**") // TOUTES les API
+                .excludePathPatterns(
+                        "/auth/login",
+                        "/auth/register",
+                        "/auth/forgot-password",
+                        "/auth/reset-password"
+                );
     }
 }
