@@ -103,6 +103,14 @@ public class RoomService {
     }
 
     // -----------------------
+    //  AFFICHER UN SALON PAR ID
+    // -----------------------
+    public Room getRoomById(Long id) {
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+    }
+
+    // -----------------------
     //  QUITTER UN SALON
     // -----------------------
     public String leaveRoom(Long roomId, Long userId) {
@@ -116,10 +124,8 @@ public class RoomService {
         RoomMember member = memberRepository.findByRoomIdAndUserId(roomId, userId)
                 .orElseThrow(() -> new RuntimeException("L'utilisateur n'est pas dans ce salon"));
 
-        // Supprimer le membre
         memberRepository.delete(member);
 
-        // Mettre à jour le nombre de membres
         room.setMembers(room.getMembers() - 1);
         roomRepository.save(room);
 
