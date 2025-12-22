@@ -169,7 +169,7 @@ public class RoomService {
     }
 
     // -----------------------
-    //  RETIRER UN MEMBRE (CRÉATEUR SEULEMENT)
+    //  RETIRER UN MEMBRE (CRÉATEUR SEULEMENT) ✅ NOUVEAU
     // -----------------------
     public String removeMember(Long roomId, Long requesterId, Long userIdToRemove) {
 

@@ -84,4 +84,16 @@ public class RoomController {
     ) {
         return roomService.getRoomMembers(roomId, requesterId);
     }
+
+    // -----------------------
+    //  RETIRER UN MEMBRE DU SALON (CRÉATEUR SEULEMENT)
+    // -----------------------
+    @PostMapping("/{roomId}/remove-member")
+    public String removeMember(
+            @PathVariable Long roomId,
+            @RequestParam Long requesterId,
+            @RequestParam Long userId
+    ) {
+        return roomService.removeMember(roomId, requesterId, userId);
+    }
 }
