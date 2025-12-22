@@ -1,8 +1,8 @@
 package com.streaming.watchfilx.controllers;
 
 import com.streaming.watchfilx.models.Room;
+import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.services.RoomService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,8 +12,11 @@ import java.util.List;
 @CrossOrigin(origins = "*")
 public class RoomController {
 
-    @Autowired
-    private RoomService roomService;
+    private final RoomService roomService;
+
+    public RoomController(RoomService roomService) {
+        this.roomService = roomService;
+    }
 
     // -----------------------
     //  CRÉER UN SALON
@@ -32,14 +35,6 @@ public class RoomController {
     }
 
     // -----------------------
-    //  QUITTER UN SALON
-    // -----------------------
-    @PostMapping("/leave")
-    public String leaveRoom(@RequestParam Long roomId, @RequestParam Long userId) {
-        return roomService.leaveRoom(roomId, userId);
-    }
-
-    // -----------------------
     //  PUBLIER UNE VIDÉO
     // -----------------------
     @PostMapping("/publish-video")
@@ -50,13 +45,13 @@ public class RoomController {
     // -----------------------
     //  LISTE DES SALONS
     // -----------------------
-    @GetMapping("/list")
+    @GetMapping
     public List<Room> getAllRooms() {
         return roomService.getAllRooms();
     }
 
     // -----------------------
-    //  AFFICHER UN SALON PAR ID  ✅ NOUVELLE API
+    //  AFFICHER UN SALON PAR ID
     // -----------------------
     @GetMapping("/{id}")
     public Room getRoomById(@PathVariable Long id) {
@@ -64,10 +59,29 @@ public class RoomController {
     }
 
     // -----------------------
+    //  QUITTER UN SALON
+    // -----------------------
+    @PostMapping("/leave")
+    public String leaveRoom(@RequestParam Long roomId, @RequestParam Long userId) {
+        return roomService.leaveRoom(roomId, userId);
+    }
+
+    // -----------------------
     //  SUPPRIMER UN SALON
     // -----------------------
-    @DeleteMapping("/delete")
-    public String deleteRoom(@RequestParam Long roomId) {
+    @DeleteMapping("/{roomId}")
+    public String deleteRoom(@PathVariable Long roomId) {
         return roomService.deleteRoom(roomId);
+    }
+
+    // -----------------------
+    //  LISTE DES MEMBRES DU SALON (CRÉATEUR SEULEMENT)
+    // -----------------------
+    @GetMapping("/{roomId}/members")
+    public List<User> getRoomMembers(
+            @PathVariable Long roomId,
+            @RequestParam Long requesterId
+    ) {
+        return roomService.getRoomMembers(roomId, requesterId);
     }
 }
