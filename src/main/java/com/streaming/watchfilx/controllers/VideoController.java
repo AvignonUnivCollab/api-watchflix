@@ -8,7 +8,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/videos")
-@CrossOrigin(origins = "*")
 public class VideoController {
 
     private final VideoService videoService;
