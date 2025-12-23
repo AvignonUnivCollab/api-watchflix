@@ -1,7 +1,7 @@
 package com.streaming.watchfilx.controllers;
 
 import com.streaming.watchfilx.dtos.requests.auth.ResetPasswordRequest;
-import com.streaming.watchfilx.dtos.responses.auth.LoginResponse;
+import com.streaming.watchfilx.dtos.responses.auth.AuthResponse;
 import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.dtos.requests.auth.ForgotPasswordRequest;
 import com.streaming.watchfilx.dtos.requests.auth.LoginRequest;
@@ -17,14 +17,15 @@ public class AuthController {
     private UserService userService;
 
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.register(user);
+    public AuthResponse register(@RequestBody User user) {
+        User res = userService.register(user);
+        return new AuthResponse("Compte créer", user);
     }
 
     @PostMapping("/login")
-    public LoginResponse login(@RequestBody LoginRequest request) {
+    public AuthResponse login(@RequestBody LoginRequest request) {
         User user = userService.login(request.getEmail(), request.getPassword());
-        return new LoginResponse("Connexion réussie", user);
+        return new AuthResponse("Connexion réussie", user);
     }
 
     @PostMapping("/forgot-password")
