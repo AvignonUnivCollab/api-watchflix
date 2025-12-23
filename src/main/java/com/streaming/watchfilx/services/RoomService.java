@@ -10,6 +10,7 @@ import com.streaming.watchfilx.repositories.RoomMemberRepository;
 import com.streaming.watchfilx.repositories.RoomRepository;
 import com.streaming.watchfilx.repositories.UserRepository;
 import com.streaming.watchfilx.repositories.VideoRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -25,6 +26,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
+
+    @Value("${app.base-url}")
+    private String baseUrl;
 
     private final RoomRepository roomRepository;
     private final RoomMemberRepository memberRepository;
@@ -68,7 +72,7 @@ public class RoomService {
             String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path path = Paths.get("uploads/" + fileName);
             Files.write(path, image.getBytes());
-            imageUrl = "/images/" + fileName;
+            imageUrl = baseUrl + "/images/" + fileName;
 
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de l'upload de l'image");
