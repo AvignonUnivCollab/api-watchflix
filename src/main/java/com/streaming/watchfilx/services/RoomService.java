@@ -1,5 +1,6 @@
 package com.streaming.watchfilx.services;
 
+import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
 import com.streaming.watchfilx.models.Room;
 import com.streaming.watchfilx.models.RoomMember;
 import com.streaming.watchfilx.models.User;
@@ -10,7 +11,9 @@ import com.streaming.watchfilx.repositories.UserRepository;
 import com.streaming.watchfilx.repositories.VideoRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class RoomService {
@@ -98,8 +101,39 @@ public class RoomService {
     // -----------------------
     //  LISTE DES SALONS
     // -----------------------
-    public List<Room> getAllRooms() {
-        return roomRepository.findAll();
+    public List<RoomListResponse> getAllRooms() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+        return roomRepository.findAll().stream().map(room -> {
+
+            // Créateur
+            User creator = userRepository.findById(room.getCreatorId())
+                    .orElse(null);
+
+            String creatorName = creator != null
+                    ? creator.getNom() + " " + creator.getPrenom()
+                    : "Inconnu";
+
+            // Vidéo courante
+            Video video = room.getCurrentVideoId() != null
+                    ? videoRepository.findById(room.getCurrentVideoId()).orElse(null)
+                    : null;
+
+            String videoTitle = video != null ? video.getTitle() : "Aucune vidéo";
+
+            return new RoomListResponse(
+                    room.getId(),
+                    room.getName(),
+                    room.getThumbnail(),
+                    videoTitle,
+                    room.getMembers(),
+                    room.getDuration(),
+                    creatorName,
+                    room.getDescription(),
+                    room.getCreatedAt().format(formatter)
+            );
+
+        }).collect(Collectors.toList());
     }
 
     // -----------------------

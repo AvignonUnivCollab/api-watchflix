@@ -1,5 +1,6 @@
 package com.streaming.watchfilx.controllers;
 
+import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
 import com.streaming.watchfilx.models.Room;
 import com.streaming.watchfilx.services.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +51,7 @@ public class RoomController {
     //  LISTE DES SALONS
     // -----------------------
     @GetMapping
-    public List<Room> getAllRooms() {
+    public List<RoomListResponse> getAllRooms() {
         return roomService.getAllRooms();
     }
 
