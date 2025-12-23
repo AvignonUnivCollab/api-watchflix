@@ -127,7 +127,7 @@ public class RoomService {
                     room.getThumbnail(),
                     videoTitle,
                     room.getMembers(),
-                    room.getDuration(),
+                    room.getDuration().toString(),
                     creatorName,
                     room.getDescription(),
                     room.getCreatedAt().format(formatter)

@@ -13,7 +13,7 @@ public class RoomListResponse {
     private String createdAt;
 
 
-    public RoomListResponse(Long id, String name, String thumbnail, String currentVideo, int viewers, Integer duration, String creator, String description, String createdAt) {
+    public RoomListResponse(Long id, String name, String thumbnail, String currentVideo, int viewers, String duration, String creator, String description, String createdAt) {
         this.id = id;
         this.name = name;
         this.thumbnail = thumbnail;
