@@ -27,9 +27,6 @@ import java.util.stream.Collectors;
 @Service
 public class RoomService {
 
-    @Value("${app.base-url}")
-    private String baseUrl;
-
     private final RoomRepository roomRepository;
     private final RoomMemberRepository memberRepository;
     private final UserRepository userRepository;
@@ -72,7 +69,7 @@ public class RoomService {
             String fileName = UUID.randomUUID() + "_" + image.getOriginalFilename();
             Path path = Paths.get("uploads/" + fileName);
             Files.write(path, image.getBytes());
-            imageUrl = baseUrl + "/images/" + fileName;
+            imageUrl = "/images/" + fileName;
 
         } catch (IOException e) {
             throw new RuntimeException("Erreur lors de l'upload de l'image");
