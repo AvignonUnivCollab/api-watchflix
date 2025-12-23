@@ -49,7 +49,7 @@ public class RoomController {
     // -----------------------
     //  LISTE DES SALONS
     // -----------------------
-    @GetMapping("/list")
+    @GetMapping
     public List<Room> getAllRooms() {
         return roomService.getAllRooms();
     }
