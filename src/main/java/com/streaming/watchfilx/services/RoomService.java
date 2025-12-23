@@ -102,17 +102,13 @@ public class RoomService {
     //  LISTE DES SALONS
     // -----------------------
     public List<RoomListResponse> getAllRooms() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
         return roomRepository.findAll().stream().map(room -> {
 
             // Créateur
-            User creator = userRepository.findById(room.getCreatorId())
-                    .orElse(null);
+            User creator = userRepository.findById(room.getCreatorId()).orElse(null);
 
-            String creatorName = creator != null
-                    ? creator.getNom() + " " + creator.getPrenom()
-                    : "Inconnu";
+            String creatorName = creator != null ? creator.getNom() + " " + creator.getPrenom(): "Inconnu";
 
             // Vidéo courante
             Video video = room.getCurrentVideoId() != null
@@ -127,10 +123,9 @@ public class RoomService {
                     room.getThumbnail(),
                     videoTitle,
                     room.getMembers(),
-                    room.getDuration().toString(),
                     creatorName,
                     room.getDescription(),
-                    room.getCreatedAt().format(formatter)
+                    room.getCreatedAt()
             );
 
         }).collect(Collectors.toList());
