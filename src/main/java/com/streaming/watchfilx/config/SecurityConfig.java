@@ -15,13 +15,11 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 @Configuration
 public class SecurityConfig {
 
-    // ---- IMPORTANT : Le PasswordEncoder ----
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
-    // ---- CORS CONFIG ----
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
@@ -31,11 +29,20 @@ public class SecurityConfig {
                 "http://127.0.0.1:3000",
                 "https://watchflix84.netlify.app"
         ));
-        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        config.setAllowedMethods(List.of(
+                "GET", "POST", "PUT", "DELETE", "OPTIONS"
+        ));
+
         config.setAllowedHeaders(List.of("*"));
+        config.setExposedHeaders(List.of(
+                "Authorization",
+                "Content-Disposition"
+        ));
         config.setAllowCredentials(true);
 
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        UrlBasedCorsConfigurationSource source =
+                new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
 
         return source;
@@ -55,3 +62,5 @@ public class SecurityConfig {
         return http.build();
     }
 }
+
+
