@@ -13,8 +13,17 @@ public class RoomListResponse {
     private String description;
     private LocalDateTime createdAt;
 
+    public RoomListResponse() {
+    }
 
-    public RoomListResponse(Long id, String name, String thumbnail, String currentVideo, int viewers, String creator, String description, LocalDateTime createdAt) {
+    public RoomListResponse(Long id,
+                            String name,
+                            String thumbnail,
+                            String currentVideo,
+                            int viewers,
+                            String creator,
+                            String description,
+                            LocalDateTime createdAt) {
         this.id = id;
         this.name = name;
         this.thumbnail = thumbnail;
@@ -24,4 +33,13 @@ public class RoomListResponse {
         this.description = description;
         this.createdAt = createdAt;
     }
+
+    public Long getId() { return id; }
+    public String getName() { return name; }
+    public String getThumbnail() { return thumbnail; }
+    public String getCurrentVideo() { return currentVideo; }
+    public int getViewers() { return viewers; }
+    public String getCreator() { return creator; }
+    public String getDescription() { return description; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
 }
