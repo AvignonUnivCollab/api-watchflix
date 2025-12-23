@@ -41,10 +41,36 @@ class RoomServiceTest {
 
         Room savedRoom = roomService.createRoom(room);
 
-        // GIVEN : un utilisateur existant (ID déjà en base)
+        // GIVEN : un utilisateur existant
         Long userId = 1L;
 
-        // 👉 Étape 5.1 : préparation uniquement
-        // (on appellera joinRoom à l’étape suivante)
+        // WHEN : l’utilisateur rejoint le salon
+        String result = roomService.joinRoom(savedRoom.getId(), userId);
+
+        // THEN : message OK
+        assertEquals("Utilisateur ajouté au salon avec succès", result);
+
+        // THEN : le nombre de membres a augmenté
+        Room updatedRoom = roomService.getRoomById(savedRoom.getId());
+        assertEquals(1, updatedRoom.getMembers());
+    }
+
+    @Test
+    void leaveRoom_shouldRemoveUserFromRoom() {
+        // GIVEN : un salon existant
+        Room room = new Room();
+        room.setName("Salon Leave " + System.currentTimeMillis());
+        room.setCreatorId(1L);
+        room.setDescription("Salon pour test leave");
+
+        Room savedRoom = roomService.createRoom(room);
+
+        // GIVEN : un utilisateur existant
+        Long userId = 1L;
+
+        // GIVEN : l’utilisateur rejoint d’abord le salon
+        roomService.joinRoom(savedRoom.getId(), userId);
+
+
     }
 }
