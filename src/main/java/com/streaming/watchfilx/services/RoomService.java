@@ -113,7 +113,7 @@ public class RoomService {
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-        User user = userRepository.findById(userId)
+        userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
 
         boolean alreadyMember = memberRepository.findByRoomIdAndUserId(roomId, userId).isPresent();
@@ -183,6 +183,14 @@ public class RoomService {
     }
 
     // -----------------------
+    //  AFFICHER UN SALON PAR ID
+    // -----------------------
+    public Room getRoomById(Long id) {
+        return roomRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+    }
+
+    // -----------------------
     //  QUITTER UN SALON
     // -----------------------
     public String leaveRoom(Long roomId, Long userId) {
@@ -196,10 +204,8 @@ public class RoomService {
         RoomMember member = memberRepository.findByRoomIdAndUserId(roomId, userId)
                 .orElseThrow(() -> new RuntimeException("L'utilisateur n'est pas dans ce salon"));
 
-        // Supprimer le membre
         memberRepository.delete(member);
 
-        // Mettre à jour le nombre de membres
         room.setMembers(room.getMembers() - 1);
         roomRepository.save(room);
 
@@ -220,5 +226,49 @@ public class RoomService {
         roomRepository.delete(room);
 
         return "Salon supprimé avec succès";
+    }
+
+    // -----------------------
+    //  LISTE DES MEMBRES (CRÉATEUR SEULEMENT)
+    // -----------------------
+    public List<User> getRoomMembers(Long roomId, Long requesterId) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        if (!room.getCreatorId().equals(requesterId)) {
+            throw new RuntimeException("Accès refusé : vous n'êtes pas le créateur du salon");
+        }
+
+        List<RoomMember> roomMembers = memberRepository.findByRoomId(roomId);
+
+        return roomMembers.stream()
+                .map(member -> userRepository.findById(member.getUserId())
+                        .orElseThrow(() -> new RuntimeException("Utilisateur introuvable")))
+                .toList();
+    }
+
+    // -----------------------
+    //  RETIRER UN MEMBRE (CRÉATEUR SEULEMENT) ✅ NOUVEAU
+    // -----------------------
+    public String removeMember(Long roomId, Long requesterId, Long userIdToRemove) {
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+        // Sécurité : seul le créateur
+        if (!room.getCreatorId().equals(requesterId)) {
+            throw new RuntimeException("Accès refusé : vous n'êtes pas le créateur du salon");
+        }
+
+        RoomMember member = memberRepository.findByRoomIdAndUserId(roomId, userIdToRemove)
+                .orElseThrow(() -> new RuntimeException("L'utilisateur n'est pas dans ce salon"));
+
+        memberRepository.delete(member);
+
+        room.setMembers(room.getMembers() - 1);
+        roomRepository.save(room);
+
+        return "Utilisateur retiré du salon avec succès";
     }
 }
