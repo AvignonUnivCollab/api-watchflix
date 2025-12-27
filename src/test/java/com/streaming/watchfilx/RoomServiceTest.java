@@ -1,6 +1,7 @@
 package com.streaming.watchfilx;
 
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
 import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.models.Role;
 import com.streaming.watchfilx.services.RoomService;
@@ -9,6 +10,7 @@ import com.streaming.watchfilx.models.Room;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,21 +26,34 @@ class RoomServiceTest {
     private UserRepository userRepository;
 
     // -----------------------
+    // UTILITAIRE : image mockée
+    // -----------------------
+    private MockMultipartFile mockImage() {
+        return new MockMultipartFile(
+                "image",
+                "test.png",
+                "image/png",
+                "fake-image-content".getBytes()
+        );
+    }
+
+    // -----------------------
     // TEST createRoom
     // -----------------------
     @Test
     void createRoom_shouldSaveRoom() {
+
         CreateRoomRequest request = new CreateRoomRequest();
         request.setName("Salon-" + System.nanoTime());
+        request.setDescription("Test salon");
         request.setCreatorId(1L);
 
-        // createRoom retourne un DTO (pas l'entity Room)
-        var createdRoom = roomService.createRoom(request, null);
+        RoomListResponse createdRoom =
+                roomService.createRoom(request, mockImage());
 
         assertThat(createdRoom).isNotNull();
         assertThat(createdRoom.getId()).isNotNull();
 
-        // Vérification métier via l'entity
         Room roomEntity = roomService.getRoomById(createdRoom.getId());
         assertThat(roomEntity.getMembers()).isEqualTo(0);
     }
@@ -48,6 +63,7 @@ class RoomServiceTest {
     // -----------------------
     @Test
     void joinRoom_shouldAddUserToRoom() {
+
         User user = new User();
         user.setNom("Test");
         user.setPrenom("User");
@@ -58,9 +74,11 @@ class RoomServiceTest {
 
         CreateRoomRequest request = new CreateRoomRequest();
         request.setName("Join-" + System.nanoTime());
+        request.setDescription("Join test");
         request.setCreatorId(1L);
 
-        var createdRoom = roomService.createRoom(request, null);
+        RoomListResponse createdRoom =
+                roomService.createRoom(request, mockImage());
 
         String result = roomService.joinRoom(createdRoom.getId(), user.getId());
 
@@ -73,6 +91,7 @@ class RoomServiceTest {
     // -----------------------
     @Test
     void leaveRoom_shouldRemoveUserFromRoom() {
+
         User user = new User();
         user.setNom("Leave");
         user.setPrenom("User");
@@ -83,9 +102,11 @@ class RoomServiceTest {
 
         CreateRoomRequest request = new CreateRoomRequest();
         request.setName("Leave-" + System.nanoTime());
+        request.setDescription("Leave test");
         request.setCreatorId(1L);
 
-        var createdRoom = roomService.createRoom(request, null);
+        RoomListResponse createdRoom =
+                roomService.createRoom(request, mockImage());
 
         roomService.joinRoom(createdRoom.getId(), user.getId());
 
@@ -100,6 +121,7 @@ class RoomServiceTest {
     // -----------------------
     @Test
     void removeMember_shouldRemoveUserByCreator() {
+
         User creator = new User();
         creator.setNom("Creator");
         creator.setPrenom("User");
@@ -118,9 +140,11 @@ class RoomServiceTest {
 
         CreateRoomRequest request = new CreateRoomRequest();
         request.setName("Remove-" + System.nanoTime());
+        request.setDescription("Remove test");
         request.setCreatorId(creator.getId());
 
-        var createdRoom = roomService.createRoom(request, null);
+        RoomListResponse createdRoom =
+                roomService.createRoom(request, mockImage());
 
         roomService.joinRoom(createdRoom.getId(), member.getId());
 
