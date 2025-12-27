@@ -1,10 +1,11 @@
 package com.streaming.watchfilx;
 
-import com.streaming.watchfilx.models.Room;
+import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.models.Role;
 import com.streaming.watchfilx.services.RoomService;
 import com.streaming.watchfilx.repositories.UserRepository;
+import com.streaming.watchfilx.models.Room;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -27,14 +28,19 @@ class RoomServiceTest {
     // -----------------------
     @Test
     void createRoom_shouldSaveRoom() {
-        Room room = new Room();
-        room.setName("Salon-" + System.nanoTime());
-        room.setCreatorId(1L);
+        CreateRoomRequest request = new CreateRoomRequest();
+        request.setName("Salon-" + System.nanoTime());
+        request.setCreatorId(1L);
 
-        Room savedRoom = roomService.createRoom(room);
+        // createRoom retourne un DTO (pas l'entity Room)
+        var createdRoom = roomService.createRoom(request, null);
 
-        assertThat(savedRoom.getId()).isNotNull();
-        assertThat(savedRoom.getMembers()).isEqualTo(0);
+        assertThat(createdRoom).isNotNull();
+        assertThat(createdRoom.getId()).isNotNull();
+
+        // Vérification métier via l'entity
+        Room roomEntity = roomService.getRoomById(createdRoom.getId());
+        assertThat(roomEntity.getMembers()).isEqualTo(0);
     }
 
     // -----------------------
@@ -50,15 +56,16 @@ class RoomServiceTest {
         user.setRole(Role.USER);
         user = userRepository.save(user);
 
-        Room room = new Room();
-        room.setName("Join-" + System.nanoTime());
-        room.setCreatorId(1L);
-        room = roomService.createRoom(room);
+        CreateRoomRequest request = new CreateRoomRequest();
+        request.setName("Join-" + System.nanoTime());
+        request.setCreatorId(1L);
 
-        String result = roomService.joinRoom(room.getId(), user.getId());
+        var createdRoom = roomService.createRoom(request, null);
+
+        String result = roomService.joinRoom(createdRoom.getId(), user.getId());
 
         assertThat(result).contains("succès");
-        assertThat(roomService.getRoomById(room.getId()).getMembers()).isEqualTo(1);
+        assertThat(roomService.getRoomById(createdRoom.getId()).getMembers()).isEqualTo(1);
     }
 
     // -----------------------
@@ -74,17 +81,18 @@ class RoomServiceTest {
         user.setRole(Role.USER);
         user = userRepository.save(user);
 
-        Room room = new Room();
-        room.setName("Leave-" + System.nanoTime());
-        room.setCreatorId(1L);
-        room = roomService.createRoom(room);
+        CreateRoomRequest request = new CreateRoomRequest();
+        request.setName("Leave-" + System.nanoTime());
+        request.setCreatorId(1L);
 
-        roomService.joinRoom(room.getId(), user.getId());
+        var createdRoom = roomService.createRoom(request, null);
 
-        String result = roomService.leaveRoom(room.getId(), user.getId());
+        roomService.joinRoom(createdRoom.getId(), user.getId());
+
+        String result = roomService.leaveRoom(createdRoom.getId(), user.getId());
 
         assertThat(result).contains("succès");
-        assertThat(roomService.getRoomById(room.getId()).getMembers()).isEqualTo(0);
+        assertThat(roomService.getRoomById(createdRoom.getId()).getMembers()).isEqualTo(0);
     }
 
     // -----------------------
@@ -108,20 +116,21 @@ class RoomServiceTest {
         member.setRole(Role.USER);
         member = userRepository.save(member);
 
-        Room room = new Room();
-        room.setName("Remove-" + System.nanoTime());
-        room.setCreatorId(creator.getId());
-        room = roomService.createRoom(room);
+        CreateRoomRequest request = new CreateRoomRequest();
+        request.setName("Remove-" + System.nanoTime());
+        request.setCreatorId(creator.getId());
 
-        roomService.joinRoom(room.getId(), member.getId());
+        var createdRoom = roomService.createRoom(request, null);
+
+        roomService.joinRoom(createdRoom.getId(), member.getId());
 
         String result = roomService.removeMember(
-                room.getId(),
+                createdRoom.getId(),
                 creator.getId(),
                 member.getId()
         );
 
         assertThat(result).contains("succès");
-        assertThat(roomService.getRoomById(room.getId()).getMembers()).isEqualTo(0);
+        assertThat(roomService.getRoomById(createdRoom.getId()).getMembers()).isEqualTo(0);
     }
 }
