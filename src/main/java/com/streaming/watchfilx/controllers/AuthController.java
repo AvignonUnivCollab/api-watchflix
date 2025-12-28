@@ -25,7 +25,8 @@ public class AuthController {
     @PostMapping("/login")
     public AuthResponse login(@RequestBody LoginRequest request) {
         User user = userService.login(request.getEmail(), request.getPassword());
-        return new AuthResponse("Connexion réussie", user);
+        System.out.println("ID USER = " + user.getId());
+        return new AuthResponse("\"ID USER = \" + user.getId()", user);
     }
 
     @PostMapping("/forgot-password")
