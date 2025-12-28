@@ -1,10 +1,12 @@
 package com.streaming.watchfilx.dtos.responses.auth;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.streaming.watchfilx.models.User;
 
 public class AuthResponse {
-
+    @JsonProperty("id")
     private Long id;
+
     private String message;
     private String email;
     private String nom;
