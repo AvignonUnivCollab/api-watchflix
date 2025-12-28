@@ -136,7 +136,7 @@ public class RoomService {
                         v.getTitle(),
                         v.getUrl(),
                         v.getThumbnail(),
-                        null,
+                        v.getDescription(),
                         v.getDuration()
                 )).toList();
 
@@ -162,7 +162,7 @@ public class RoomService {
                                                 pv.getVideo().getTitle(),
                                                 pv.getVideo().getUrl(),
                                                 pv.getVideo().getThumbnail(),
-                                                null,
+                                                pv.getVideo().getDescription(),
                                                 pv.getVideo().getDuration()
                                         ),
                                         new UserMiniResponse(

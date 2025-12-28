@@ -44,6 +44,14 @@ public class Video {
     public Long getRoomId() { return roomId; }
     public void setRoomId(Long roomId) { this.roomId = roomId; }
 
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public Long getUserId() { return userId; }
     public void setUserId(Long userId) { this.userId = userId; }
 }
