@@ -1,9 +1,17 @@
 package com.streaming.watchfilx.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.requests.video.CreateVideoRequest;
+import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
+import com.streaming.watchfilx.dtos.responses.video.VideoResponse;
 import com.streaming.watchfilx.models.Video;
 import com.streaming.watchfilx.services.VideoService;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -11,17 +19,26 @@ import java.util.List;
 public class VideoController {
 
     private final VideoService videoService;
+    private final ObjectMapper objectMapper;
 
-    public VideoController(VideoService videoService) {
+    public VideoController(VideoService videoService, ObjectMapper objectMapper) {
         this.videoService = videoService;
+        this.objectMapper = objectMapper;
     }
 
     // --------------------------
     //  CRÉER UNE VIDÉO
     // --------------------------
-    @PostMapping("/create")
-    public Video createVideo(@RequestBody Video video) {
-        return videoService.createVideo(video);
+    @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public VideoResponse createVideo(
+            @RequestPart("data") String videoJson,
+            @RequestPart("image") MultipartFile image
+    ) throws IOException {
+
+        CreateVideoRequest request =
+                objectMapper.readValue(videoJson, CreateVideoRequest.class);
+
+        return videoService.createVideo(request, image);
     }
 
     // --------------------------
