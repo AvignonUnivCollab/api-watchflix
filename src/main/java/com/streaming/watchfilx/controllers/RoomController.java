@@ -2,6 +2,7 @@ package com.streaming.watchfilx.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.responses.room.RoomDetailResponse;
 import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
 import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.services.RoomService;
@@ -80,6 +81,14 @@ public class RoomController {
             @RequestParam Long requesterId
     ) {
         return roomService.getRoomMembers(roomId, requesterId);
+    }
+
+    @GetMapping("/{id}")
+    public RoomDetailResponse getRoomDetail(
+            @PathVariable Long id,
+            @RequestParam Long userId
+    ) {
+        return roomService.getRoomDetail(id, userId);
     }
 
     // -----------------------
