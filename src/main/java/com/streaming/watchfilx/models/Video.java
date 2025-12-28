@@ -15,6 +15,9 @@ public class Video {
     private String thumbnail;
     private Integer duration;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(name = "room_id", nullable = false)
     private Long roomId;
 
