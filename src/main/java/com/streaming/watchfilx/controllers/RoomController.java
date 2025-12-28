@@ -3,6 +3,7 @@ package com.streaming.watchfilx.controllers;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
+import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.services.RoomService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -68,6 +69,17 @@ public class RoomController {
     @GetMapping
     public List<RoomListResponse> getAllRooms() {
         return roomService.getAllRooms();
+    }
+
+    // -----------------------
+    //  LISTE DES MEMBRES D'UN SALON (CRÉATEUR SEULEMENT) ✅ NOUVEAU
+    // -----------------------
+    @GetMapping("/{roomId}/members")
+    public List<User> getRoomMembers(
+            @PathVariable Long roomId,
+            @RequestParam Long requesterId
+    ) {
+        return roomService.getRoomMembers(roomId, requesterId);
     }
 
     // -----------------------

@@ -5,8 +5,8 @@ import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.repositories.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.UUID;
 
+import java.util.UUID;
 
 @Service
 public class UserService {
@@ -19,6 +19,9 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    // -----------------------
+    // INSCRIPTION
+    // -----------------------
     public User register(User user) {
 
         if (userRepository.findByEmail(user.getEmail()).isPresent()) {
@@ -31,14 +34,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public UserRepository getUserRepository() {
-        return userRepository;
-    }
-
-    public PasswordEncoder getPasswordEncoder() {
-        return passwordEncoder;
-    }
-
+    // -----------------------
+    // CONNEXION
+    // -----------------------
     public User login(String email, String password) {
 
         User user = userRepository
@@ -52,7 +50,17 @@ public class UserService {
         return user;
     }
 
+    // -----------------------
+    // RÉCUPÉRER UN UTILISATEUR PAR ID ✅ NOUVEAU
+    // -----------------------
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+    }
 
+    // -----------------------
+    // CRÉER UN TOKEN DE RESET
+    // -----------------------
     public String createResetToken(String email) {
 
         User user = userRepository
@@ -67,7 +75,9 @@ public class UserService {
         return token;
     }
 
-
+    // -----------------------
+    // RÉINITIALISER LE MOT DE PASSE
+    // -----------------------
     public String resetPassword(String token, String newPassword) {
 
         User user = userRepository
@@ -75,12 +85,21 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Token invalide"));
 
         user.setPassword(passwordEncoder.encode(newPassword));
-
         user.setResetToken(null);
+
         userRepository.save(user);
 
         return "Mot de passe réinitialisé avec succès";
     }
 
+    // -----------------------
+    // GETTERS (si utilisés ailleurs)
+    // -----------------------
+    public UserRepository getUserRepository() {
+        return userRepository;
+    }
 
+    public PasswordEncoder getPasswordEncoder() {
+        return passwordEncoder;
+    }
 }
