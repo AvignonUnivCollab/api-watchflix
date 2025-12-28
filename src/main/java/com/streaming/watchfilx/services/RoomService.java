@@ -92,6 +92,7 @@ public class RoomService {
                 ? creator.getNom() + " " + creator.getPrenom()
                 : "Inconnu";
 
+        List<Long> memberIds = List.of();
         //Réponse UI
         return new RoomListResponse(
                 room.getId(),
@@ -99,10 +100,12 @@ public class RoomService {
                 room.getThumbnail(),
                 "Aucune vidéo",
                 room.getMembers(),
+                memberIds,
                 creatorName,
                 room.getDescription(),
                 room.getCreatedAt()
         );
+
     }
 
     // -----------------------
@@ -158,8 +161,9 @@ public class RoomService {
 
             // Créateur
             User creator = userRepository.findById(room.getCreatorId()).orElse(null);
-
-            String creatorName = creator != null ? creator.getNom() + " " + creator.getPrenom(): "Inconnu";
+            String creatorName = creator != null
+                    ? creator.getNom() + " " + creator.getPrenom()
+                    : "Inconnu";
 
             // Vidéo courante
             Video video = room.getCurrentVideoId() != null
@@ -168,12 +172,19 @@ public class RoomService {
 
             String videoTitle = video != null ? video.getTitle() : "Aucune vidéo";
 
+            // MEMBRES RÉELS
+            List<Long> memberIds = memberRepository.findByRoomId(room.getId())
+                    .stream()
+                    .map(RoomMember::getUserId)
+                    .toList();
+
             return new RoomListResponse(
                     room.getId(),
                     room.getName(),
                     room.getThumbnail(),
                     videoTitle,
-                    room.getMembers(),
+                    room.getMembers(),     // compteur
+                    memberIds,             // IDs réels
                     creatorName,
                     room.getDescription(),
                     room.getCreatedAt()

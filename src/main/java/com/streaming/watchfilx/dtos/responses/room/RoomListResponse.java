@@ -1,6 +1,9 @@
 package com.streaming.watchfilx.dtos.responses.room;
 
+import com.streaming.watchfilx.models.User;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class RoomListResponse {
 
@@ -9,6 +12,7 @@ public class RoomListResponse {
     private String thumbnail;
     private String currentVideo;
     private int viewers;
+    private List<Long> memberIds;
     private String creator;
     private String description;
     private LocalDateTime createdAt;
@@ -21,6 +25,7 @@ public class RoomListResponse {
                             String thumbnail,
                             String currentVideo,
                             int viewers,
+                            List<Long> membersIds,
                             String creator,
                             String description,
                             LocalDateTime createdAt) {
@@ -30,6 +35,7 @@ public class RoomListResponse {
         this.currentVideo = currentVideo;
         this.viewers = viewers;
         this.creator = creator;
+        this.memberIds = membersIds;
         this.description = description;
         this.createdAt = createdAt;
     }
@@ -42,4 +48,8 @@ public class RoomListResponse {
     public String getCreator() { return creator; }
     public String getDescription() { return description; }
     public LocalDateTime getCreatedAt() { return createdAt; }
+
+    public List<Long> getMemberIds() {
+        return memberIds;
+    }
 }
