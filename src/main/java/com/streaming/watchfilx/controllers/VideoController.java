@@ -1,5 +1,5 @@
 package com.streaming.watchfilx.controllers;
-
+import com.streaming.watchfilx.dtos.requests.video.UpdateVideoRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.requests.video.CreateVideoRequest;
@@ -65,4 +65,12 @@ public class VideoController {
         videoService.deleteVideo(videoId);
         return "Vidéo supprimée avec succès";
     }
+    // modifier video 
+    @PutMapping("/{videoId}")
+public VideoResponse updateVideo(
+        @PathVariable Long videoId,
+        @RequestBody UpdateVideoRequest request
+) {
+    return videoService.updateVideo(videoId, request);
+}
 }
