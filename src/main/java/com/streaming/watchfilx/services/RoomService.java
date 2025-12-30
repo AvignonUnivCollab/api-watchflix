@@ -354,4 +354,28 @@ public class RoomService {
 
         return "Utilisateur retiré du salon avec succès";
     }
+
+    
+    public String disableInvite(Long roomId, Long requesterId, Long userId) {
+
+    Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+    // Sécurité : seul le créateur
+    if (!room.getCreatorId().equals(requesterId)) {
+        throw new RuntimeException("Accès refusé : vous n'êtes pas le créateur du salon");
+    }
+
+    RoomMember member = memberRepository
+            .findByRoomIdAndUserId(roomId, userId)
+            .orElseThrow(() -> new RuntimeException("Invitation introuvable"));
+
+    memberRepository.delete(member);
+
+    room.setMembers(room.getMembers() - 1);
+    roomRepository.save(room);
+
+    return "Invitation désactivée avec succès";
+}
+
 }
