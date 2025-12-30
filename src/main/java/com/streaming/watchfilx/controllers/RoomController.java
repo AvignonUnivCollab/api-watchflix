@@ -1,7 +1,8 @@
 package com.streaming.watchfilx.controllers;
-
+import com.streaming.watchfilx.dtos.requests.room.InviteMemberRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.requests.room.InviteMemberRequest;
 import com.streaming.watchfilx.dtos.responses.room.RoomDetailResponse;
 import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
 import com.streaming.watchfilx.models.User;
@@ -98,4 +99,13 @@ public class RoomController {
     public String deleteRoom(@RequestParam Long roomId) {
         return roomService.deleteRoom(roomId);
     }
+    @PostMapping("/invite")
+public String inviteMember(@RequestBody InviteMemberRequest request) {
+    return roomService.inviteMember(
+            request.getRoomId(),
+            request.getRequesterId(),
+            request.getUserId()
+    );
+}
+
 }
