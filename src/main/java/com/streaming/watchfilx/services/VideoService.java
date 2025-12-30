@@ -103,4 +103,15 @@ public class VideoService {
 
         videoRepository.deleteById(videoId);
     }
+    // -------------------------------------------
+//  RETIRER UNE VIDÉO DU SALON
+// -------------------------------------------
+public void removeVideoFromRoom(Long videoId) {
+
+    Video video = videoRepository.findById(videoId)
+            .orElseThrow(() -> new RuntimeException("Vidéo introuvable"));
+
+    video.setRoomId(null);
+    videoRepository.save(video);
+}
 }

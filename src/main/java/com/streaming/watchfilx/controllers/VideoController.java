@@ -65,4 +65,13 @@ public class VideoController {
         videoService.deleteVideo(videoId);
         return "Vidéo supprimée avec succès";
     }
+    // -------------------------------------------
+//  RETIRER UNE VIDÉO DU SALON
+// -------------------------------------------
+@PutMapping("/{videoId}/remove-from-room")
+public String removeVideoFromRoom(@PathVariable Long videoId) {
+    videoService.removeVideoFromRoom(videoId);
+    return "Vidéo retirée du salon avec succès";
+}
+
 }
