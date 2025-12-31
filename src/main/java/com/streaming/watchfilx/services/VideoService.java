@@ -104,38 +104,14 @@ public class VideoService {
         videoRepository.deleteById(videoId);
     }
     // -------------------------------------------
-//  MODIFIER UNE VIDÉO
+//  RETIRER UNE VIDÉO DU SALON
 // -------------------------------------------
-public VideoResponse updateVideo(Long videoId, UpdateVideoRequest request) {
+public void removeVideoFromRoom(Long videoId) {
 
-    // 1️⃣ Vérifier que la vidéo existe
     Video video = videoRepository.findById(videoId)
             .orElseThrow(() -> new RuntimeException("Vidéo introuvable"));
 
-    // Modifier les champs (seulement s’ils ne sont pas null)
-    if (request.getTitle() != null) {
-        video.setTitle(request.getTitle());
-    }
-
-    if (request.getDescription() != null) {
-        video.setDescription(request.getDescription());
-    }
-
-    if (request.getUrl() != null) {
-        video.setUrl(request.getUrl());
-    }
-
-    // Sauvegarder les modifications
+    video.setRoomId(null);
     videoRepository.save(video);
-
-    // Retourner la réponse
-    return new VideoResponse(
-            video.getId(),
-            video.getTitle(),
-            video.getUrl(),
-            video.getThumbnail(),
-            video.getDescription(),
-            1
-    );
 }
 }

@@ -65,12 +65,13 @@ public class VideoController {
         videoService.deleteVideo(videoId);
         return "Vidéo supprimée avec succès";
     }
-    // modifier video 
-    @PutMapping("/{videoId}")
-public VideoResponse updateVideo(
-        @PathVariable Long videoId,
-        @RequestBody UpdateVideoRequest request
-) {
-    return videoService.updateVideo(videoId, request);
+    // -------------------------------------------
+//  RETIRER UNE VIDÉO DU SALON
+// -------------------------------------------
+@PutMapping("/{videoId}/remove-from-room")
+public String removeVideoFromRoom(@PathVariable Long videoId) {
+    videoService.removeVideoFromRoom(videoId);
+    return "Vidéo retirée du salon avec succès";
 }
+
 }
