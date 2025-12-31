@@ -1,5 +1,5 @@
 package com.streaming.watchfilx.controllers;
-
+import com.streaming.watchfilx.dtos.requests.room.UpdateRoomRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.responses.room.RoomDetailResponse;
@@ -98,4 +98,21 @@ public class RoomController {
     public String deleteRoom(@RequestParam Long roomId) {
         return roomService.deleteRoom(roomId);
     }
+    // -------------------------------------------
+//  MODIFIER UN SALON
+// -------------------------------------------
+@PutMapping("/{roomId}")
+public String updateRoom(
+        @PathVariable Long roomId,
+        @RequestBody UpdateRoomRequest request
+) {
+    roomService.updateRoom(
+            roomId,
+            request.getName(),
+            request.getDescription()
+    );
+
+    return "Salon modifié avec succès";
+}
+
 }

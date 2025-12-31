@@ -354,4 +354,25 @@ public class RoomService {
 
         return "Utilisateur retiré du salon avec succès";
     }
+    // -------------------------------------------
+//  MODIFIER UN SALON
+// -------------------------------------------
+public void updateRoom(Long roomId, String name, String description) {
+
+    //  Récupérer le salon
+    Room room = roomRepository.findById(roomId)
+            .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+
+    //  Modifier seulement ce qui est fourni
+    if (name != null && !name.isBlank()) {
+        room.setName(name);
+    }
+
+    if (description != null && !description.isBlank()) {
+        room.setDescription(description);
+    }
+
+    //  Sauvegarder
+    roomRepository.save(room);
+}
 }
