@@ -354,33 +354,28 @@ public class RoomService {
 
         return "Utilisateur retiré du salon avec succès";
     }
-    // -----------------------
-//  INVITER UN MEMBRE (CRÉATEUR SEULEMENT) ✅
-// -----------------------
-public String inviteMember(Long roomId, Long requesterId, Long userId) {
+
+    
+    public String disableInvite(Long roomId, Long requesterId, Long userId) {
 
     Room room = roomRepository.findById(roomId)
             .orElseThrow(() -> new RuntimeException("Salon introuvable"));
 
-    // Sécurité : seul le créateur peut inviter
+    // Sécurité : seul le créateur
     if (!room.getCreatorId().equals(requesterId)) {
         throw new RuntimeException("Accès refusé : vous n'êtes pas le créateur du salon");
     }
 
-    // Vérifier si déjà membre
-    if (memberRepository.existsByRoomIdAndUserId(roomId, userId)) {
-        throw new RuntimeException("Utilisateur déjà membre du salon");
-    }
+    RoomMember member = memberRepository
+            .findByRoomIdAndUserId(roomId, userId)
+            .orElseThrow(() -> new RuntimeException("Invitation introuvable"));
 
-    RoomMember member = new RoomMember();
-    member.setRoomId(roomId);
-    member.setUserId(userId);
-    memberRepository.save(member);
+    memberRepository.delete(member);
 
-    room.setMembers(room.getMembers() + 1);
+    room.setMembers(room.getMembers() - 1);
     roomRepository.save(room);
 
-    return "Membre invité avec succès";
+    return "Invitation désactivée avec succès";
 }
 
 }
