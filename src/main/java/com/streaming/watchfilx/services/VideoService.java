@@ -1,5 +1,5 @@
 package com.streaming.watchfilx.services;
-
+import com.streaming.watchfilx.dtos.requests.video.UpdateVideoRequest;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.requests.video.CreateVideoRequest;
 import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
@@ -103,4 +103,39 @@ public class VideoService {
 
         videoRepository.deleteById(videoId);
     }
+    // -------------------------------------------
+//  MODIFIER UNE VIDÉO
+// -------------------------------------------
+public VideoResponse updateVideo(Long videoId, UpdateVideoRequest request) {
+
+    // 1️⃣ Vérifier que la vidéo existe
+    Video video = videoRepository.findById(videoId)
+            .orElseThrow(() -> new RuntimeException("Vidéo introuvable"));
+
+    // Modifier les champs (seulement s’ils ne sont pas null)
+    if (request.getTitle() != null) {
+        video.setTitle(request.getTitle());
+    }
+
+    if (request.getDescription() != null) {
+        video.setDescription(request.getDescription());
+    }
+
+    if (request.getUrl() != null) {
+        video.setUrl(request.getUrl());
+    }
+
+    // Sauvegarder les modifications
+    videoRepository.save(video);
+
+    // Retourner la réponse
+    return new VideoResponse(
+            video.getId(),
+            video.getTitle(),
+            video.getUrl(),
+            video.getThumbnail(),
+            video.getDescription(),
+            1
+    );
+}
 }

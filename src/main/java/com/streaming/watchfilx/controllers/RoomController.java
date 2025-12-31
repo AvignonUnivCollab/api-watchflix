@@ -1,5 +1,5 @@
 package com.streaming.watchfilx.controllers;
-
+import com.streaming.watchfilx.dtos.requests.room.InviteMemberRequest;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.requests.room.DisableInviteRequest;
