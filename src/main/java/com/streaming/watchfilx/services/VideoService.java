@@ -1,5 +1,5 @@
 package com.streaming.watchfilx.services;
-
+import com.streaming.watchfilx.dtos.requests.video.UpdateVideoRequest;
 import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
 import com.streaming.watchfilx.dtos.requests.video.CreateVideoRequest;
 import com.streaming.watchfilx.dtos.responses.room.RoomListResponse;
