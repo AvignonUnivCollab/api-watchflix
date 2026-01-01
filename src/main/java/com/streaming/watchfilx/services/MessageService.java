@@ -1,8 +1,6 @@
 package com.streaming.watchfilx.services;
 
 import com.streaming.watchfilx.models.Message;
-import com.streaming.watchfilx.models.Room;
-import com.streaming.watchfilx.models.User;
 import com.streaming.watchfilx.repositories.MessageRepository;
 import com.streaming.watchfilx.repositories.RoomRepository;
 import com.streaming.watchfilx.repositories.UserRepository;
@@ -30,19 +28,24 @@ public class MessageService {
     // ---------------------------
     public Message sendMessage(Long roomId, Long userId, String content) {
 
+        if (content == null || content.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le message ne peut pas être vide");
+        }
+
         // Vérifier que la salle existe
-        Room room = roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+        if (!roomRepository.existsById(roomId)) {
+            throw new RuntimeException("Salon introuvable");
+        }
 
         // Vérifier que l'utilisateur existe
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("Utilisateur introuvable"));
+        if (!userRepository.existsById(userId)) {
+            throw new RuntimeException("Utilisateur introuvable");
+        }
 
-        // Créer le message
         Message message = new Message();
         message.setRoomId(roomId);
         message.setUserId(userId);
-        message.setContent(content);
+        message.setContent(content.trim());
 
         return messageRepository.save(message);
     }
@@ -52,9 +55,9 @@ public class MessageService {
     // ---------------------------
     public List<Message> getRoomMessages(Long roomId) {
 
-        // Vérifier que le salon existe
-        roomRepository.findById(roomId)
-                .orElseThrow(() -> new RuntimeException("Salon introuvable"));
+        if (!roomRepository.existsById(roomId)) {
+            throw new RuntimeException("Salon introuvable");
+        }
 
         return messageRepository.findByRoomIdOrderByTimestampAsc(roomId);
     }
