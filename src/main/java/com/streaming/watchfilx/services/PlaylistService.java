@@ -39,7 +39,9 @@ public class PlaylistService {
             throw new RuntimeException("Cette vidéo est déjà dans la playlist");
         }
 
-        int nextPosition = playlistRepo.countByRoom(room) + 1;
+        int nextPosition = playlistRepo
+                .findByRoomIdOrderByPositionAsc(roomId)
+                .size() + 1;
         Playlist result = playlistRepo.save(new Playlist(video, room, user, nextPosition));
 
         VideoResponse videoResponse = new VideoResponse();

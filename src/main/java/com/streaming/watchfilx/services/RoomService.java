@@ -163,7 +163,7 @@ public class RoomService {
 
 
         List<PlaylistVideoResponse> playlistVideos =
-                playlistRepository.findAllByRoom(room)
+                playlistRepository.findByRoomIdOrderByPositionAsc(roomId)
                         .stream()
                         .sorted(Comparator.comparingInt(Playlist::getPosition))
                         .map(pv -> new PlaylistVideoResponse(

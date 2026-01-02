@@ -15,4 +15,6 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
 
     boolean existsByRoomAndVideo(Room room, Video video);
 
+    List<Playlist> findByRoomIdOrderByPositionAsc(Long roomId);
+
 }

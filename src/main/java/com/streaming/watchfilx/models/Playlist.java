@@ -5,9 +5,7 @@ import jakarta.persistence.*;
 @Entity
 @Table(
         name = "playlist",
-        uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"room_id", "video_id"})
-        }
+        uniqueConstraints = @UniqueConstraint(columnNames = {"room_id", "video_id"})
 )
 public class Playlist {
 
