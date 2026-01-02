@@ -143,13 +143,23 @@ public class RoomService {
         List<MessageResponse> messages = messageRepository
                 .findByRoomIdOrderByTimestampAsc(roomId)
                 .stream()
-                .map(m -> new MessageResponse(
-                        m.getId(),
-                        m.getUserId(),
-                        room.getId(),
-                        m.getContent(),
-                        m.getTimestamp()
-                )).toList();
+                .map(m -> {
+
+                    User user = userRepository.findById(m.getUserId())
+                            .orElseThrow();
+
+                    String fullName = user.getPrenom() + " " + user.getNom();
+
+                    return new MessageResponse(
+                            m.getId(),
+                            fullName,
+                            room.getId(),
+                            m.getContent(),
+                            m.getTimestamp()
+                    );
+                })
+                .toList();
+
 
         Playlist playlist = playlistRepository.findByRoom(room);
 
