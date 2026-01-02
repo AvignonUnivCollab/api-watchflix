@@ -19,24 +19,21 @@ import java.util.List;
 public class MessageController {
 
     private final MessageService messageService;
-    private final ObjectMapper objectMapper;
 
-    public MessageController(MessageService messageService, ObjectMapper mapper) {
+    public MessageController(MessageService messageService) {
         this.messageService = messageService;
-        this.objectMapper = mapper;
     }
 
     // ---------------------------
     // ENVOYER UN MESSAGE
     // ---------------------------
     @PostMapping
-    public MessageResponse sendMessage(
-            @RequestPart("data") String messageJson
-    ) throws JsonProcessingException {
+    public MessageResponse sendMessage(@RequestBody Message message) {
 
-        MessageRequest request =
-                objectMapper.readValue(messageJson, MessageRequest.class);
-
+        MessageRequest request = new MessageRequest();
+        request.setUserId(message.getUserId());
+        request.setContent(message.getContent());
+        request.setRoomId(message.getRoomId());
         return messageService.sendMessage(request);
     }
 
