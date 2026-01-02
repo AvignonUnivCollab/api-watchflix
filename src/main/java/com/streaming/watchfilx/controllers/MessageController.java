@@ -1,6 +1,12 @@
 package com.streaming.watchfilx.controllers;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.streaming.watchfilx.dtos.requests.message.MessageRequest;
+import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.responses.message.MessageResponse;
 import com.streaming.watchfilx.models.Message;
+import com.streaming.watchfilx.models.Video;
 import com.streaming.watchfilx.services.MessageService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,42 +19,32 @@ import java.util.List;
 public class MessageController {
 
     private final MessageService messageService;
+    private final ObjectMapper objectMapper;
 
-    public MessageController(MessageService messageService) {
+    public MessageController(MessageService messageService, ObjectMapper mapper) {
         this.messageService = messageService;
+        this.objectMapper = mapper;
     }
 
     // ---------------------------
     // ENVOYER UN MESSAGE
     // ---------------------------
     @PostMapping
-    public ResponseEntity<?> sendMessage(
-            @RequestParam Long roomId,
-            @RequestParam Long userId,
-            @RequestParam String content
-    ) {
-        try {
-            Message message = messageService.sendMessage(roomId, userId, content);
-            return ResponseEntity.status(HttpStatus.CREATED).body(message);
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
+    public MessageResponse sendMessage(
+            @RequestPart("data") String messageJson
+    ) throws JsonProcessingException {
+
+        MessageRequest request =
+                objectMapper.readValue(messageJson, MessageRequest.class);
+
+        return messageService.sendMessage(request);
     }
 
     // ---------------------------
     // RÉCUPÉRER LES MESSAGES D’UN SALON
     // ---------------------------
     @GetMapping("/room/{roomId}")
-    public ResponseEntity<?> getRoomMessages(@PathVariable Long roomId) {
-        try {
-            List<Message> messages = messageService.getRoomMessages(roomId);
-            return ResponseEntity.ok(messages);
-        } catch (RuntimeException e) {
-            return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .body(e.getMessage());
-        }
+    public List<Message> getRoomMessages(@PathVariable Long roomId) {
+        return messageService.getRoomMessages(roomId);
     }
 }

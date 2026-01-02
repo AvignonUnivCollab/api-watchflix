@@ -1,5 +1,8 @@
 package com.streaming.watchfilx.services;
 
+import com.streaming.watchfilx.dtos.requests.message.MessageRequest;
+import com.streaming.watchfilx.dtos.requests.room.CreateRoomRequest;
+import com.streaming.watchfilx.dtos.responses.message.MessageResponse;
 import com.streaming.watchfilx.models.Message;
 import com.streaming.watchfilx.repositories.MessageRepository;
 import com.streaming.watchfilx.repositories.RoomRepository;
@@ -26,28 +29,30 @@ public class MessageService {
     // ---------------------------
     // ENVOYER UN MESSAGE
     // ---------------------------
-    public Message sendMessage(Long roomId, Long userId, String content) {
+    public MessageResponse sendMessage(MessageRequest request) {
 
-        if (content == null || content.trim().isEmpty()) {
+        if (request.getContent() == null || request.getContent().trim().isEmpty()) {
             throw new IllegalArgumentException("Le message ne peut pas être vide");
         }
 
         // Vérifier que la salle existe
-        if (!roomRepository.existsById(roomId)) {
+        if (!roomRepository.existsById(request.getRoomId())) {
             throw new RuntimeException("Salon introuvable");
         }
 
         // Vérifier que l'utilisateur existe
-        if (!userRepository.existsById(userId)) {
+        if (!userRepository.existsById(request.getUserId())) {
             throw new RuntimeException("Utilisateur introuvable");
         }
 
         Message message = new Message();
-        message.setRoomId(roomId);
-        message.setUserId(userId);
-        message.setContent(content.trim());
+        message.setRoomId(request.getRoomId());
+        message.setUserId(request.getUserId());
+        message.setContent(request.getContent().trim());
 
-        return messageRepository.save(message);
+        Message result = messageRepository.save(message);
+        return new MessageResponse(result.getUserId(), result.getUserId(), result.getRoomId(), result.getContent(), result.getTimestamp());
+
     }
 
     // ---------------------------

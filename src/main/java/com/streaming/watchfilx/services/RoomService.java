@@ -146,6 +146,7 @@ public class RoomService {
                 .map(m -> new MessageResponse(
                         m.getId(),
                         m.getUserId(),
+                        room.getId(),
                         m.getContent(),
                         m.getTimestamp()
                 )).toList();
@@ -171,6 +172,10 @@ public class RoomService {
                                         )
                                 )).toList();
 
+        VideoResponse currentVideo = null;
+        if (!videos.isEmpty()) {
+            currentVideo = videos.get(0);
+        }
         return new RoomDetailResponse(
                 room.getId(),
                 room.getName(),
@@ -179,7 +184,7 @@ public class RoomService {
                 ownerDto,
                 room.getMembers(),
                 isMember,
-                null, // currentVideo (à brancher plus tard)
+                currentVideo,
                 videos,
                 playlistVideos,
                 messages
