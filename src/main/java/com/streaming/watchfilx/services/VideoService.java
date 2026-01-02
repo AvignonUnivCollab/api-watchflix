@@ -114,4 +114,38 @@ public void removeVideoFromRoom(Long videoId) {
     video.setRoomId(null);
     videoRepository.save(video);
 }
+
+
+    public VideoResponse updateVideo(Long videoId, UpdateVideoRequest request) {
+
+        // Vérifier que la vidéo existe
+        Video video = videoRepository.findById(videoId)
+                .orElseThrow(() -> new RuntimeException("Vidéo introuvable"));
+
+        // Modifier les champs (seulement s’ils ne sont pas null)
+        if (request.getTitle() != null) {
+            video.setTitle(request.getTitle());
+        }
+
+        if (request.getDescription() != null) {
+            video.setDescription(request.getDescription());
+        }
+
+        if (request.getUrl() != null) {
+            video.setUrl(request.getUrl());
+        }
+
+        // Sauvegarder les modifications
+        videoRepository.save(video);
+
+        // Retourner la réponse
+        return new VideoResponse(
+                video.getId(),
+                video.getTitle(),
+                video.getUrl(),
+                video.getThumbnail(),
+                video.getDescription(),
+                1
+        );
+    }
 }

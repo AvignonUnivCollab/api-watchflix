@@ -74,4 +74,11 @@ public String removeVideoFromRoom(@PathVariable Long videoId) {
     return "Vidéo retirée du salon avec succès";
 }
 
+    @PutMapping("/{videoId}")
+    public VideoResponse updateVideo(
+            @PathVariable Long videoId,
+            @RequestBody UpdateVideoRequest request
+    ) {
+        return videoService.updateVideo(videoId, request);
+    }
 }
