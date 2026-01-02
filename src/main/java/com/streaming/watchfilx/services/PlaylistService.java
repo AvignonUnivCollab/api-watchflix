@@ -35,7 +35,7 @@ public class PlaylistService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        int nextPosition = 1;
+        int nextPosition = playlistRepo.countByRoom(room) + 1;
         Playlist result = playlistRepo.save(new Playlist(video, room, user, nextPosition));
 
         VideoResponse videoResponse = new VideoResponse();

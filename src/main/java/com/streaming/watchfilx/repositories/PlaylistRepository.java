@@ -10,5 +10,7 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
     Playlist findByRoom(Room room);
 
     List<Playlist> findAllByRoom(Room room);
+    int countByRoom(Room room);
+
 
 }
