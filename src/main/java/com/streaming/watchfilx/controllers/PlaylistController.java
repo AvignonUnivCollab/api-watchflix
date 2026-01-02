@@ -32,5 +32,14 @@ public class PlaylistController {
                 request.getUserId()
         );
     }
+
+    @DeleteMapping("/remove-video/{videoId}")
+    public ResponseEntity<?> removeVideo(
+            @PathVariable Long roomId,
+            @PathVariable Long videoId
+    ) {
+        playlistService.removeVideo(roomId, videoId);
+        return ResponseEntity.ok().build();
+    }
 }
 

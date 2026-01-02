@@ -7,6 +7,8 @@ import com.streaming.watchfilx.models.*;
 import com.streaming.watchfilx.repositories.*;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class PlaylistService {
 
@@ -55,5 +57,25 @@ public class PlaylistService {
         userMiniResponse.setName(user.getNom() + " " + user.getPrenom());
 
         return new PlaylistVideoResponse(result.getPosition(), videoResponse, userMiniResponse);
+    }
+
+
+    public void removeVideo(Long roomId, Long videoId) {
+
+        if (!playlistRepo.existsByRoomIdAndVideoId(roomId, videoId)) {
+            throw new RuntimeException("Cette vidéo n'est pas dans la playlist");
+        }
+
+        playlistRepo.deleteByRoomIdAndVideoId(roomId, videoId);
+
+        //Recalculer les positions après suppression
+        List<Playlist> remaining = playlistRepo.findByRoomIdOrderByPositionAsc(roomId);
+
+        int position = 1;
+        for (Playlist p : remaining) {
+            p.setPosition(position++);
+        }
+
+        playlistRepo.saveAll(remaining);
     }
 }
