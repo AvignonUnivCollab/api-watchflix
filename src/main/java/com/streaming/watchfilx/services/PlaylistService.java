@@ -5,6 +5,7 @@ import com.streaming.watchfilx.dtos.responses.user.UserMiniResponse;
 import com.streaming.watchfilx.dtos.responses.video.VideoResponse;
 import com.streaming.watchfilx.models.*;
 import com.streaming.watchfilx.repositories.*;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -59,7 +60,7 @@ public class PlaylistService {
         return new PlaylistVideoResponse(result.getPosition(), videoResponse, userMiniResponse);
     }
 
-
+    @Transactional
     public void removeVideo(Long roomId, Long videoId) {
 
         if (!playlistRepo.existsByRoomIdAndVideoId(roomId, videoId)) {
