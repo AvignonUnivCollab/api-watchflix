@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface PlaylistRepository extends JpaRepository<Playlist, Long> {
-    Playlist findByRoom(Room room);
+    List<Playlist> findAllByRoomId(Long roomId);
 
     List<Playlist> findAllByRoom(Room room);
     int countByRoom(Room room);

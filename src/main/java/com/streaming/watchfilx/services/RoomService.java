@@ -162,8 +162,6 @@ public class RoomService {
                 .toList();
 
 
-        Playlist playlist = playlistRepository.findByRoom(room);
-
         List<PlaylistVideoResponse> playlistVideos =
                 playlistRepository.findAllByRoom(room)
                         .stream()
