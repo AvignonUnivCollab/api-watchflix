@@ -35,6 +35,10 @@ public class PlaylistService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        if (playlistRepo.existsByRoomAndVideo(room, video)) {
+            throw new RuntimeException("Cette vidéo est déjà dans la playlist");
+        }
+
         int nextPosition = playlistRepo.countByRoom(room) + 1;
         Playlist result = playlistRepo.save(new Playlist(video, room, user, nextPosition));
 
