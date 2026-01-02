@@ -1,5 +1,9 @@
 package com.streaming.watchfilx.controllers;
 
+import com.streaming.watchfilx.dtos.requests.message.MessageRequest;
+import com.streaming.watchfilx.dtos.requests.playlist.PlaylistRequest;
+import com.streaming.watchfilx.dtos.responses.playlist.PlaylistVideoResponse;
+import com.streaming.watchfilx.models.Message;
 import com.streaming.watchfilx.models.Playlist;
 import com.streaming.watchfilx.services.PlaylistService;
 import org.springframework.http.ResponseEntity;
@@ -18,15 +22,15 @@ public class PlaylistController {
     }
 
     @PostMapping("/add-video")
-    public ResponseEntity<Playlist> addVideo(
+    public PlaylistVideoResponse addVideo(
             @PathVariable Long roomId,
-            @RequestBody Map<String, Long> body) {
-
-        Long videoId = body.get("videoId");
-        Long userId = body.get("userId");
-
-        return ResponseEntity.ok(
-                playlistService.addVideo(roomId, videoId, userId)
+            @RequestBody PlaylistRequest request
+    ) {
+        return playlistService.addVideo(
+                roomId,
+                request.getVideoId(),
+                request.getUserId()
         );
     }
 }
+

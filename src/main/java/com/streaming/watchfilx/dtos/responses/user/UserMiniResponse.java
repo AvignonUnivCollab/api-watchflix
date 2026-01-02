@@ -5,6 +5,10 @@ public class UserMiniResponse {
     private Long id;
     private String name;
 
+    public UserMiniResponse() {
+
+
+    }
     public UserMiniResponse(Long id, String name) {
         this.id = id;
         this.name = name;

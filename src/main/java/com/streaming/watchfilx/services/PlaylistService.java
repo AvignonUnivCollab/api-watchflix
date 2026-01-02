@@ -1,5 +1,8 @@
 package com.streaming.watchfilx.services;
 
+import com.streaming.watchfilx.dtos.responses.playlist.PlaylistVideoResponse;
+import com.streaming.watchfilx.dtos.responses.user.UserMiniResponse;
+import com.streaming.watchfilx.dtos.responses.video.VideoResponse;
 import com.streaming.watchfilx.models.*;
 import com.streaming.watchfilx.repositories.*;
 import org.springframework.stereotype.Service;
@@ -8,32 +11,23 @@ import org.springframework.stereotype.Service;
 public class PlaylistService {
 
     private final PlaylistRepository playlistRepo;
-    private final PlaylistVideoRepository playlistVideoRepo;
     private final RoomRepository roomRepo;
     private final VideoRepository videoRepo;
     private final UserRepository userRepo;
 
     public PlaylistService(PlaylistRepository playlistRepo,
-                           PlaylistVideoRepository playlistVideoRepo,
                            RoomRepository roomRepo,
                            VideoRepository videoRepo,
                            UserRepository userRepo) {
         this.playlistRepo = playlistRepo;
-        this.playlistVideoRepo = playlistVideoRepo;
         this.roomRepo = roomRepo;
         this.videoRepo = videoRepo;
         this.userRepo = userRepo;
     }
 
-    public Playlist addVideo(Long roomId, Long videoId, Long userId) {
+    public PlaylistVideoResponse addVideo(Long roomId, Long videoId, Long userId) {
         Room room = roomRepo.findById(roomId)
                 .orElseThrow(() -> new RuntimeException("Room not found"));
-
-        Playlist playlist = playlistRepo.findByRoom(room);
-        if (playlist == null) {
-            playlist = new Playlist(room);
-            playlistRepo.save(playlist);
-        }
 
         Video video = videoRepo.findById(videoId)
                 .orElseThrow(() -> new RuntimeException("Video not found"));
@@ -41,12 +35,19 @@ public class PlaylistService {
         User user = userRepo.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        int nextPosition = playlist.getVideos().size() + 1;
+        int nextPosition = 1;
+        Playlist result = playlistRepo.save(new Playlist(video, room, user, nextPosition));
 
-        PlaylistVideo playlistVideo = new PlaylistVideo(video, playlist, user, nextPosition);
+        VideoResponse videoResponse = new VideoResponse();
+        videoResponse.setId(result.getVideo().getId());
+        videoResponse.setUrl(result.getVideo().getUrl());
+        videoResponse.setDescription(result.getVideo().getDescription());
+        videoResponse.setThumbnail(result.getVideo().getThumbnail());
 
-        playlistVideoRepo.save(playlistVideo);
+        UserMiniResponse userMiniResponse = new UserMiniResponse();
+        userMiniResponse.setId(user.getId());
+        userMiniResponse.setName(user.getNom() + " " + user.getPrenom());
 
-        return playlist;
+        return new PlaylistVideoResponse(result.getPosition(), videoResponse, userMiniResponse);
     }
 }

@@ -1,8 +1,6 @@
 package com.streaming.watchfilx.models;
 
 import jakarta.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 public class Playlist {
@@ -11,24 +9,39 @@ public class Playlist {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Une playlist appartient à un seul salon
-    @OneToOne
+    private int position;
+
+    @ManyToOne
     @JoinColumn(name = "room_id")
     private Room room;
 
-    @OneToMany(mappedBy = "playlist", cascade = CascadeType.ALL, orphanRemoval = true)
-    @OrderBy("position ASC")
-    private List<PlaylistVideo> videos = new ArrayList<>();
+    // La vidéo associée (déjà liée au salon)
+    @ManyToOne
+    @JoinColumn(name = "video_id")
+    private Video video;
+
+    // L'utilisateur qui a ajouté la vidéo
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User addedBy;
 
     public Playlist() {}
 
-    public Playlist(Room room) {
+    public Playlist(Video video, Room room, User addedBy, int position) {
+        this.video = video;
         this.room = room;
+        this.addedBy = addedBy;
+        this.position = position;
     }
 
     public Long getId() { return id; }
-    public Room getRoom() { return room; }
-    public List<PlaylistVideo> getVideos() { return videos; }
+    public int getPosition() { return position; }
+    public Video getVideo() { return video; }
+    public User getAddedBy() { return addedBy; }
 
-    public void setRoom(Room room) { this.room = room; }
+    public Room getRoom() {
+        return room;
+    }
+
+    public void setPosition(int position) { this.position = position; }
 }

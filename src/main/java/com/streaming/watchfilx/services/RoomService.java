@@ -19,6 +19,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -164,23 +165,26 @@ public class RoomService {
         Playlist playlist = playlistRepository.findByRoom(room);
 
         List<PlaylistVideoResponse> playlistVideos =
-                playlist == null ? List.of() :
-                        playlist.getVideos().stream()
-                                .map(pv -> new PlaylistVideoResponse(
-                                        pv.getPosition(),
-                                        new VideoResponse(
-                                                pv.getVideo().getId(),
-                                                pv.getVideo().getTitle(),
-                                                pv.getVideo().getUrl(),
-                                                pv.getVideo().getThumbnail(),
-                                                pv.getVideo().getDescription(),
-                                                pv.getVideo().getDuration()
-                                        ),
-                                        new UserMiniResponse(
-                                                pv.getAddedBy().getId(),
-                                                pv.getAddedBy().getPrenom()
-                                        )
-                                )).toList();
+                playlistRepository.findAllByRoom(room)
+                        .stream()
+                        .sorted(Comparator.comparingInt(Playlist::getPosition))
+                        .map(pv -> new PlaylistVideoResponse(
+                                pv.getPosition(),
+                                new VideoResponse(
+                                        pv.getVideo().getId(),
+                                        pv.getVideo().getTitle(),
+                                        pv.getVideo().getUrl(),
+                                        pv.getVideo().getThumbnail(),
+                                        pv.getVideo().getDescription(),
+                                        pv.getVideo().getDuration()
+                                ),
+                                new UserMiniResponse(
+                                        pv.getAddedBy().getId(),
+                                        pv.getAddedBy().getPrenom()
+                                )
+                        ))
+                        .toList();
+
 
         VideoResponse currentVideo = null;
         if (!videos.isEmpty()) {
